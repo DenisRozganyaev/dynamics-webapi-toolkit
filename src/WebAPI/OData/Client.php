@@ -534,18 +534,19 @@ class Client {
      * @param string $entityCollection For bound actions -- entity set name.
      * @param string $entityId For bound actions -- entity record ID.
      *
+     * @param string $method
      * @return mixed
      * @throws AuthenticationException
      * @throws ODataException
      * @throws TransportException
      */
-    public function executeAction( $actionName, $parameters = null, $entityCollection = null, $entityId = null ) {
+    public function executeAction( $actionName, $parameters = null, $entityCollection = null, $entityId = null, $method = 'POST' ) {
         $url = sprintf( '%s%s', $this->settings->getEndpointURI(), $actionName );
         if ( $entityCollection != null ) {
             $url = sprintf( '%s%s(%s)%s', $this->settings->getEndpointURI(), $entityCollection, $entityId, $actionName );
         }
 
-        $res = $this->doRequest( 'POST', $url, $parameters );
+        $res = $this->doRequest( $method, $url, $parameters );
         $result = json_decode( $res->getBody() );
         unset( $result->{Annotation::ODATA_CONTEXT} );
 
